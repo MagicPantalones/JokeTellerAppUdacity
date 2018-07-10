@@ -1,10 +1,8 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,7 +14,8 @@ import static junit.framework.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class AsyncJokeTest {
-    //Help to write test from Billy Brackeen's answer here: https://stackoverflow.com/questions/2321829/android-asynctask-testing-with-android-test-framework
+    //Help to write test from Keerthana S's answer here:
+    //https://stackoverflow.com/questions/2321829/android-asynctask-testing-with-android-test-framework
 
     @Test
     public void testAsyncTask() {
@@ -25,10 +24,9 @@ public class AsyncJokeTest {
             @Override
             protected void onPostExecute(String s) {
                 assertNotNull(s);
-                if (s != null) {
-                    assertTrue(s.length() > 0);
-                    signal.countDown();
-                }
+                assertTrue(s.length() > 0);
+                signal.countDown();
+
             }
         };
 
