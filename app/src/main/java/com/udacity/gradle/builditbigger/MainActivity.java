@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.udacity.gradle.builditbigger.backend.jokeApi.JokeApi;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.MainFragListener{
 
     private static JokeApi jokeApi = null;
 
@@ -42,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view) {
-        new MyEndpointAsyncTask().execute(this);
-    }
-
-
-
+    @Override
+    public void jokeButtonClicked() { new MyEndpointAsyncTask().execute(this); }
 }
