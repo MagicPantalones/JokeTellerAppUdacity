@@ -1,6 +1,5 @@
 package com.udacity.gradle.builditbigger;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -20,18 +19,17 @@ public class AsyncJokeTest {
     @Test
     public void testAsyncTask() {
         final CountDownLatch signal = new CountDownLatch(1);
-        final MyEndpointAsyncTask task = new MyEndpointAsyncTask() {
+        final MyEndpointAsyncTask task = new MyEndpointAsyncTask(new MyEndpointAsyncTask.EndpointTaskListener() {
             @Override
-            protected void onPostExecute(String s) {
+            public void onPostExecute(String s) {
                 assertNotNull(s);
                 assertTrue(s.length() > 0);
                 signal.countDown();
-
             }
-        };
+        });
 
         try {
-            task.execute(InstrumentationRegistry.getTargetContext());
+            task.execute();
             signal.await();
         } catch (InterruptedException e) {
             fail();

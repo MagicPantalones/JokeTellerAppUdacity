@@ -1,10 +1,7 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -14,15 +11,21 @@ import com.udacity.gradle.builditbigger.backend.jokeApi.JokeApi;
 
 import java.io.IOException;
 
-import io.magics.jokedisplay.JokeActivity;
-
-class MyEndpointAsyncTask extends AsyncTask<Context, Void, String> {
+class MyEndpointAsyncTask extends AsyncTask<Void, Void, String> {
 
     private static JokeApi jokeApi = null;
-    private Context context;
+    private EndpointTaskListener listener;
+
+    public interface EndpointTaskListener {
+        void onPostExecute(String s);
+    }
+
+    public MyEndpointAsyncTask(EndpointTaskListener listener) {
+        this.listener = listener;
+    }
 
     @Override
-    protected String doInBackground(Context... params) {
+    protected String doInBackground(Void... params) {
         if (jokeApi == null) {
             JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -37,7 +40,6 @@ class MyEndpointAsyncTask extends AsyncTask<Context, Void, String> {
             jokeApi = builder.build();
         }
 
-        context = params[0];
         try {
             return jokeApi.visitJoker().execute().getData();
         } catch (IOException e) {
@@ -48,13 +50,6 @@ class MyEndpointAsyncTask extends AsyncTask<Context, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        if (s != null) {
-            Intent intent = new Intent(context, JokeActivity.class);
-            intent.putExtra(JokeActivity.KEY_JOKE, s);
-            context.startActivity(intent);
-        } else {
-            Toast.makeText(context, context.getString(R.string.api_error), Toast.LENGTH_LONG)
-                    .show();
-        }
+        listener.onPostExecute(s);
     }
 }

@@ -1,16 +1,18 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.udacity.gradle.builditbigger.backend.jokeApi.JokeApi;
+import io.magics.jokedisplay.JokeActivity;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 
-public class MainActivity extends AppCompatActivity implements MainActivityFragment.MainFragListener{
-
-    private static JokeApi jokeApi = null;
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.MainFragListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,5 +44,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     }
 
     @Override
-    public void jokeButtonClicked() { new MyEndpointAsyncTask().execute(this); }
+    public void jokeButtonClicked() {
+        new MyEndpointAsyncTask(new MyEndpointAsyncTask.EndpointTaskListener() {
+            @Override
+            public void onPostExecute(String s) {
+                if (s != null) {
+                    Intent intent = new Intent(MainActivity.this, JokeActivity.class);
+                    intent.putExtra(JokeActivity.KEY_JOKE, s);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            getString(R.string.api_error), LENGTH_LONG).show();
+                }
+            }
+        }).execute();
+    }
 }
